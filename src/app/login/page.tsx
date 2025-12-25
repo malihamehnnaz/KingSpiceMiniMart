@@ -4,21 +4,31 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
+import { Loader2 } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError("");
+
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
     if (username === "user" && password === "password") {
       login(username);
       router.push("/");
     } else {
       setError("Invalid credentials. Try user/password");
+      setIsLoading(false);
     }
   };
 
@@ -74,9 +84,22 @@ export default function LoginPage() {
           <div>
             <button
               type="submit"
-              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-masala-red hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-masala-red transition-all shadow-lg shadow-masala-red/30 hover:shadow-xl hover:scale-[1.02]"
+              disabled={isLoading}
+              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-masala-red hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-masala-red transition-all shadow-lg shadow-masala-red/30 hover:shadow-xl hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed items-center gap-2"
             >
-              Sign in
+              {isLoading ? (
+                <>
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  >
+                    <Loader2 className="w-4 h-4" />
+                  </motion.div>
+                  Signing in...
+                </>
+              ) : (
+                "Sign in"
+              )}
             </button>
           </div>
         </form>

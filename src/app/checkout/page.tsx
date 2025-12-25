@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
-import { ShieldCheck, Lock, CreditCard, Truck, CheckCircle } from "lucide-react";
+import { ShieldCheck, Lock, CreditCard, Truck, CheckCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 export default function CheckoutPage() {
   const { items, subtotal, clearCart } = useCart();
@@ -226,7 +227,15 @@ export default function CheckoutPage() {
               className="w-full bg-masala-red text-white py-4 rounded-xl font-bold text-lg hover:bg-red-700 transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {isProcessing ? (
-                <>Processing...</>
+                <>
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  >
+                    <Loader2 className="w-5 h-5" />
+                  </motion.div>
+                  Processing...
+                </>
               ) : (
                 <>Pay ${subtotal.toFixed(2)}</>
               )}

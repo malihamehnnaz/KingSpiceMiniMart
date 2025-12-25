@@ -3,7 +3,7 @@
 import { products } from "@/data/products";
 import { categoryImages } from "@/data/categoryImages";
 import { useCart } from "@/context/CartContext";
-import { useState, use, useEffect } from "react";
+import { useState, use, useEffect, Suspense } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -19,12 +19,13 @@ import {
   Heart,
   Share2,
   ArrowLeft,
-  CheckCircle2
+  CheckCircle2,
+  Loader2
 } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 import Link from "next/link";
 
-export default function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
+function ProductContent({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
   const product = products.find((p) => p.slug === slug);
   const { addToCart, items } = useCart();
@@ -179,7 +180,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                         onClick={() => setSelectedVariant(v)}
                         className={`px-8 py-4 rounded-2xl font-bold transition-all border-2 ${selectedVariant?.id === v.id ? 'border-primary bg-primary/5 text-primary' : 'border-gray-100 text-gray-500 hover:border-gray-200'}`}
                       >
-                        {v.weight || v.name}
+                        {v.name}
                       </button>
                     ))}
                   </div>
@@ -295,5 +296,23 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50/50">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+        >
+          <Loader2 className="w-12 h-12 text-primary" />
+        </motion.div>
+        <p className="mt-4 text-gray-500 font-bold animate-pulse">Loading Product...</p>
+      </div>
+    }>
+      <ProductContent params={params} />
+    </Suspense>
   );
 }
