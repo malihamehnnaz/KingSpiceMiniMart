@@ -12,7 +12,7 @@ import { useState, useMemo, useEffect } from "react";
 const heroSlides = [
   {
     id: 1,
-    image: "https://www.teikametrics.com/wp-content/uploads/2021/05/amz-fresh-blog-1024x536.jpg",
+    image: "https://media.istockphoto.com/id/1128687123/photo/shopping-bag-full-of-fresh-vegetables-and-fruits.jpg?s=612x612&w=0&k=20&c=jXInOVcduhEnfuUVffbUacldkF5CwAeThD3MDUXCItM=",
     title: "Fresh Groceries Delivered Daily",
     subtitle: "Experience the finest selection of authentic Indian groceries and fresh produce delivered straight to your doorstep.",
   },
