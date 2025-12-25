@@ -1,18 +1,21 @@
 import { NextResponse } from "next/server";
-import Stripe from "stripe";
 
 export const dynamic = 'force-dynamic';
 
-// Initialize Stripe with a fallback to avoid errors during build/static analysis
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_placeholder", {
-  apiVersion: "2025-12-15.clover" as any,
-});
-
 export async function POST(req: Request) {
   try {
-    if (!process.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY === 'sk_test_placeholder') {
-      throw new Error("STRIPE_SECRET_KEY is not configured.");
+    // Use require to avoid top-level initialization issues during build
+    const Stripe = require("stripe");
+    const apiKey = process.env.STRIPE_SECRET_KEY;
+    
+    if (!apiKey || apiKey === 'sk_test_placeholder') {
+      console.error("STRIPE_SECRET_KEY is not configured properly.");
+      return NextResponse.json({ error: "Payment system configuration error" }, { status: 500 });
     }
+
+    const stripe = new Stripe(apiKey, {
+      apiVersion: "2025-12-15.clover",
+    });
 
     const { items } = await req.json();
 
