@@ -1,12 +1,20 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-12-15.clover", // Use the version suggested by the error
-});
+// Initialize Stripe lazily to avoid errors during build if env vars are missing
+const getStripe = () => {
+  const apiKey = process.env.STRIPE_SECRET_KEY;
+  if (!apiKey || apiKey === 'sk_test_placeholder') {
+    console.warn("STRIPE_SECRET_KEY is not set or is a placeholder.");
+  }
+  return new Stripe(apiKey || "", {
+    apiVersion: "2025-12-15.clover" as any,
+  });
+};
 
 export async function POST(req: Request) {
   try {
+    const stripe = getStripe();
     const { items } = await req.json();
 
     if (!items || items.length === 0) {
