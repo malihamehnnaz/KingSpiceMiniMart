@@ -179,6 +179,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'cdn0.woolworths.media',
       },
+      {
+        protocol: 'https',
+        hostname: 'img.freepik.com',
+      },
     ],
   },
 };
